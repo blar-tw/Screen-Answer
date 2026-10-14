@@ -1,10 +1,18 @@
 # Screen Answer
 
-Press a hotkey and Claude reads the screen under your mouse. The answer shows up in a small
-comic-style window in the bottom-right corner.
+[![CI](https://github.com/blar-tw/Screen-Answer/actions/workflows/ci.yml/badge.svg)](https://github.com/blar-tw/Screen-Answer/actions/workflows/ci.yml)
 
-It works with math (formulas are drawn from LaTeX), code (monospace blocks with a Copy button),
-and questions too long for one screen (queue several screenshots and send them together).
+A Windows desktop helper for working through math and programming problems. Press a hotkey and
+Claude reads the problem on the screen under your mouse. It shows the worked solution in a small
+comic-style window in the bottom-right corner, without you having to copy the question anywhere.
+
+- **Step-by-step work first, answers last**, so the final answers always match the reasoning.
+- **Checks your own answers**: if the screen already shows answers you've entered, it marks each
+  one correct or shows the right value.
+- **Math rendered from LaTeX** inline, and **figures drawn with matplotlib** when a picture helps
+  (a graph to sketch, a region, a related-rates triangle).
+- **Code** in monospace blocks with a Copy button.
+- **Long problems**: queue several screenshots and send them together.
 
 ## Requirements
 
@@ -45,6 +53,19 @@ At the top of `screen_answer.pyw`:
 - `RETHINK_MODEL` / `RETHINK_EFFORT`: the Rethink button (Opus, xhigh)
 - `HOTKEYS`: the key bindings
 
+## How it works
+
+1. A global hotkey (registered with the Win32 `RegisterHotKey` API) captures the monitor under the
+   mouse with Pillow.
+2. The screenshots are sent to Claude Code's `claude.exe` in print mode as a single message, with
+   a fixed system prompt, no tools, and no user settings or session history loaded.
+3. The reply is split at fixed markers into the work, the final answers, and an optional figure
+   (a small JSON description that the program draws with matplotlib).
+4. A Tk window renders the text, drawing `$...$` formulas with matplotlib's mathtext.
+
+The whole program is one file, `screen_answer.pyw`, with no dependencies beyond Pillow and
+matplotlib.
+
 ## Privacy
 
 Screenshots and figures stay in memory and are never written to disk, and no Claude session
@@ -54,5 +75,5 @@ cleared on every start, capped at 100 KB) and matplotlib's font cache in
 
 ## License
 
-MIT, see [LICENSE](LICENSE). The Bangers font in `fonts/` is by The Bangers Project Authors under the SIL Open
-Font License, see [fonts/OFL.txt](fonts/OFL.txt).
+MIT, see [LICENSE](LICENSE). The Bangers font in `fonts/` is by The Bangers Project Authors under
+the SIL Open Font License, see [fonts/OFL.txt](fonts/OFL.txt).

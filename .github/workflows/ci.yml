@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -r requirements.txt ruff==0.13.0
+      - name: Lint
+        run: ruff check .
+      - name: Import
+        # Loads the module without starting the app (that happens under __main__)
+        run: python -c "import importlib.machinery as m; m.SourceFileLoader('screen_answer', 'screen_answer.pyw').load_module()"

@@ -60,7 +60,7 @@ EFFORT = "high"  # no hidden thinking: the written work comes before the answers
 TIMEOUT_SECS = 240
 # The Rethink button: much slower, so only when the user asks for it
 RETHINK_MODEL = "opus"
-RETHINK_EFFORT = "xhigh"  # "max" thought for over 300 s on a real homework problem
+RETHINK_EFFORT = "xhigh"  # "max" thought for over 300 s on a real calculus problem
 RETHINK_TIMEOUT_SECS = 300
 MAX_IMAGE_BYTES = 2_000_000
 MAX_SHOTS = 6
@@ -82,7 +82,7 @@ MAX_LOG_BYTES = 100_000
 ANSWER_MARKER = "===ANSWERS==="
 FIGURE_MARKER = "===FIGURE==="
 # Raw string: the LaTeX below has backslashes (\frac would otherwise turn into a form feed)
-SYSTEM_PROMPT = rf"""You solve homework problems from a screenshot, usually online calculus homework, sometimes programming questions.
+SYSTEM_PROMPT = rf"""You solve problems shown in a screenshot, usually from an online calculus course, sometimes programming questions.
 
 Reply in English with this exact layout:
 
@@ -486,7 +486,7 @@ def _draw_figure(spec, width_px, dpi):
             points = [tuple(map(float, p)) for p in item["points"]]
             if item.get("closed"):
                 points.append(points[0])
-            xs, ys = zip(*points)
+            xs, ys = zip(*points, strict=False)
             color = item.get("color") or next(colors)
             ax.plot(xs, ys, color=color, lw=2.5, ls=dash, label=label)
             if item.get("fill"):
@@ -614,7 +614,7 @@ def color_title_bar(window, caption, text, border):
 
 def lighten(rgb, amount=0.35):
     r, g, b = (int(rgb[i:i + 2], 16) for i in (1, 3, 5))
-    return "#%02x%02x%02x" % tuple(int(c + (255 - c) * amount) for c in (r, g, b))
+    return "#" + "".join(f"{int(c + (255 - c) * amount):02x}" for c in (r, g, b))
 
 
 def outlined_text(canvas, x, y, text, font, fill, outline, width, **kw):
@@ -751,7 +751,7 @@ class Masthead(tk.Canvas):
                              font=(COMIC_FAMILY, 14))
         self.delete("letter")
         x, cw, ch = 8 * s, 21 * s, 30 * s
-        for char, (font, (paper, ink), angle, dy) in zip(self.TITLE, self.letters):
+        for char, (font, (paper, ink), angle, dy) in zip(self.TITLE, self.letters, strict=True):
             if char == " ":
                 x += 10 * s
                 continue

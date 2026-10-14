@@ -1,0 +1,26 @@
+[project]
+name = "screen-answer"
+version = "1.0.0"
+description = "Press a hotkey and Claude reads your screen and answers in a small window, with LaTeX math, code blocks and drawn figures."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = ["Pillow>=10", "matplotlib>=3.7"]
+classifiers = [
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Environment :: Win32 (MS Windows)",
+]
+
+[project.urls]
+Repository = "https://github.com/blar-tw/Screen-Answer"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-include = ["*.pyw"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "UP"]
+# The system prompt is prose with one paragraph per line, so long lines are expected there
+ignore = ["E501"]
